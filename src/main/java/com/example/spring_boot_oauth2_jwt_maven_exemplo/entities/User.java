@@ -1,25 +1,36 @@
 package com.example.spring_boot_oauth2_jwt_maven_exemplo.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="tb_user")
+@Table(name = "tb_user")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     private String password;
 
-    public User() {}
+    @ManyToMany
+    @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    }
 
     public User(Long id, String name, String email, String password) {
         this.id = id;
@@ -58,6 +69,19 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public boolean hasRole(String roleName) {
+        for(Role role: roles) {
+            if(role.getAuthority().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
