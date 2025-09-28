@@ -1,5 +1,6 @@
 package com.example.spring_boot_oauth2_jwt_maven_exemplo.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -67,8 +68,9 @@ public class ResourceServerConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+		String[] origins = corsOrigins.split(",");
         CorsConfiguration config = new CorsConfiguration();
-
+		config.setAllowedOriginPatterns(Arrays.asList(origins));
         config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(List.of("*")); // use setAllowedOrigins(List.of("https://...")) em produção
         config.setAllowedHeaders(List.of("*"));
